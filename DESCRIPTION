@@ -1,0 +1,26 @@
+Package: greennessr
+Type: Package
+Title: Espacios verdes en ciudades
+Date: 2019-12-13
+Version: 1.0.0
+Authors@R: 
+    c(person(given = "Jordi",
+             family = "Segu-Tell",
+             role = c("aut", "cre"),
+             email = "jordi.segu@isciii.es",
+             comment = c(ORCID = "0000-0001-6023-1925")),
+    person(given = "Carlos",
+             family = "Vergara-Hernandéz",
+             role = c("aut"),
+             email = "vergara_car@gva.es",
+             comment = c(ORCID = "0000-0002-7263-856X"))
+             )
+Maintainer: Jordi Segú-Tell, <jordi.segu@isciii.es>
+Description: Conjunto de funciones para determianar la exposición
+  a espacios verdes urbanos a escala de seccion censal.
+Depends: R (>= 2.10)
+License: GPL (>= 3)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.0.0
+Imports: raster, sf, sp, stats 
