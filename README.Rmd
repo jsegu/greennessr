@@ -26,7 +26,7 @@ El paquete greennessr se puede instalar desde GitHub ejecutando el siguiente com
 ```{r}
 if (!"devtools" %in% installed.packages())
   install.packages()
-devtools::install_github("jsegu-tell/greennessr", build_opts = c("--no-resave-data", "--no-manual"))
+devtools::install_github("jsegu/greennessr", build_opts = c("--no-resave-data", "--no-manual"))
 ```
 
 **IMPORTANTE**: si trabajas desde un ordenador conectado a la red a través de un *proxy*, es muy importante que te asegures de que tu conexión esté bien configurada. Para ello debes ejecutar esta serie de comandos (sustituyendo el texto por los valores apropiados de tu centro: pregunta al servicio de informática):
