@@ -2,7 +2,7 @@
 greennessr
 ==========
 
-Paquete de R enmarcado dentro del proyecto MEDEA 3, concretamente creado para el objetivo de estimar la exposición a espacios verdes en de núcleos urbanos.
+Paquete de R enmarcado dentro del proyecto MEDEA 3, concretamente creado para el objetivo de estimar la exposición a espacios verdes en núcleos urbanos.
 
 Los espacios verdes urbanos son beneficiosos para la salud de los ciudadanos que conviven en ciudades. Los arboles ayudan a reducir la contaminación y establecen una barrera verde, que por ejemplo, ayuda a la regulación de las temperaturas y para bajar los niveles de contaminación acústica producida por los automóviles. Además diversos estudios apuntan que el hecho de tener un parque o un equipamiento deportivo cercano al domicilio de residencia incentiva el deporte y la movilidad de los habitantes.
 
