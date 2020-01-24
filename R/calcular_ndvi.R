@@ -126,103 +126,88 @@ calcular_ndvi <- function(dir_img, sc, calculo = mean, dev_raster = FALSE, lands
   return(res)
 }
 
-#' @title Calculo del NDVI para cada seccion censal ponderado por catastro
-
+#' @title Calculo del NDVI para cada seccion censal ponderado
+#'
+#' @encoding UTF-8
 #' @export
-## fincion de ndvi ponderado
-
-library(sf)
-library(sp)
-library(raster)
-
-setwd('//galera.isciii.es/UECA/area_compartida/cancer_infantil/jordi/fisabio/indice_verde/')
-
-#####################
-# Preparar datos como variables de entrada de la funcion
-#####################
-dir_img = "01_data/landsat/2000"
-
-catastro <- st_read("01_data/catastro/valencia/A.ES.SDGC.BU.46900.building.gml")
-#subset a quitar
-catastro <- catastro[sample(nrow(catastro),5000),]
-
-load('01_data/cartografia.rda')
-sc <- cartografia[cartografia$NMUN=='Valencia',]
-
-landsat8 <-  FALSE
-radio <- 300
-calculo <- mean
-id_sc <- 'seccion'
-
-rm(cartografia)
-
-#####################
-# Inicio de la funcion
-#####################
-# comprobar que el id_sc existe y cambiar por seccion
-sc <- id_existe(sc, id_sc)
-crs_sc <- sf::st_crs(sc)
-
-# comprobar que la capa de catastro sea la adecuada
-if (length(grep('numberOfDwellings', colnames(catastro))) == 0 |
-    length(grep('gml_id', colnames(catastro))) == 0){
-  stop('Objeto catastro no valido: Asegurese que ha seleccionado la capa "BUILDING"
-       y introduzcala a la funcion sin eliminar ni modificar ninguna variable')
-}
-
-# filtros a los datos
-catastro <- catastro[catastro$currentUse %in% '1_residential', c('gml_id','numberOfDwellings')]
-catastro$gml_id <- as.character(catastro$gml_id)
-
-# Para cambiar patern en funcion del satelite
-if (isFALSE(landsat8)){
-  satelite <- 'B3|B4'
-} else{
-  satelite <- 'B4|B5'
-}
+ndvi_ponderado <- function(dir_img, sc, id_sc, catastro, radio =300, calculo = mean, dev_raster = FALSE, landsat8 = FALSE){
+  # comprobar que el id_sc existe y cambiar por seccion
 
 
-# Lectura y apilado de las bandas rojo y nir
-dir <- list.files(path = dir_img, pattern = satelite, full.names = TRUE)
-bandas <- raster::stack(dir)
-names(bandas)<- c("red", "nir")
-# Cortar bandas con sc
-bandas <- raster::crop(bandas, epsg_igual(bandas, sc))
-# Calculo de el NDVI
-ndvi <- (bandas$nir-bandas$red)/(bandas$nir+bandas$red) # NDVI
-ndvi[ndvi>1] <- 1; ndvi[ndvi< (-1)] <- -1 #Reescalado para evitar outliers
-rm(bandas)
-
-# extraer centroides
-catastro <- sf::st_centroid(catastro)
-# buffer a lo urbano
-catastro <- sf::st_buffer(catastro, radio)
-# Extraer datos a nivel de cada parcela edificio
-catastro$ndvi <- raster::extract(ndvi,
-                                 epsg_igual(ndvi,
-                                            transformar(catastro, a_sp = TRUE)),
-                                 fun=calculo,
-                                 na.rm=TRUE)[,1]
-
-# intersectar edificios con las secciones censales
-aux <- transformar(sc)
-aux <- sf::st_intersection(epsg_igual(catastro, aux), sf::st_centroid(catastro))
-
-# calculo de la ponderación
-ponderado <- sapply(
-  unique(aux$seccion),
-  function(x) {
-    stats::weighted.mean(
-      aux$ndvi[aux$seccion == x],
-      aux$numberOfDwellings[aux$seccion == x]
-    )
+  # comprobar que la capa de catastro sea la adecuada
+  if (length(grep('numberOfDwellings', colnames(catastro))) == 0 |
+      length(grep('gml_id', colnames(catastro))) == 0){
+    stop('Objeto catastro no valido: Asegurese que ha seleccionado la capa "BUILDING"
+         y introduzcala a la funcion sin eliminar ni modificar ninguna variable')
   }
-)
-sc$ndvi_pond<- ponderado[match(sc$seccion, names(ponderado))]
+  a_sp <- constancia(sc)
+  sc <- transformar(sc)
+  catastro <- transformar(catastro)
+  sc <- epsg_igual(catastro, sc)
+  sc <- id_existe(sc, id_sc)
+  crs_sc <- sf::st_crs(sc)
+  # filtros a los datos
+  catastro <- catastro[catastro$currentUse %in% '1_residential', c('gml_id','numberOfDwellings')]
+  catastro$gml_id <- as.character(catastro$gml_id)
 
-# transformaciones para devolver mismo objeto introducido por usuario
-sc <- sf::st_transform(sc, crs_sc)
-colnames(sc)[colnames(sc)=='seccion'] <- id_sc
-sc <- transformar(sc, a_sp)
+  # Para cambiar patern en funcion del satelite
+  if (isFALSE(landsat8)){
+    satelite <- 'B3|B4'
+  } else{
+    satelite <- 'B4|B5'
+  }
 
-return(sc)
+  # Lectura y apilado de las bandas rojo y nir
+  dir <- list.files(path = dir_img, pattern = satelite, full.names = TRUE)
+  bandas <- raster::stack(dir)
+  names(bandas)<- c("red", "nir")
+  # Cortar bandas con sc
+  bandas <- raster::crop(bandas, epsg_igual(bandas, sc))
+  # Calculo de el NDVI
+  ndvi <- (bandas$nir-bandas$red)/(bandas$nir+bandas$red) # NDVI
+  ndvi[ndvi>1] <- 1; ndvi[ndvi< (-1)] <- -1 #Reescalado para evitar outliers
+  rm(bandas)
+
+  # extraer centroides
+  catastro <- sf::st_centroid(catastro)
+  # buffer a lo urbano
+  catastro <- sf::st_buffer(catastro, radio)
+  # Extraer datos a nivel de cada parcela edificio
+  catastro$ndvi <- raster::extract(ndvi,
+                                   epsg_igual(ndvi,
+                                              transformar(catastro, a_sp = TRUE)),
+                                   fun=calculo,
+                                   na.rm=TRUE)[,1]
+
+  # intersectar edificios con las secciones censales
+  aux <- transformar(sc)
+  aux <- sf::st_intersection(epsg_igual(catastro, aux), sf::st_centroid(catastro))
+
+  # calculo de la ponderación
+  ponderado <- sapply(
+    unique(aux$seccion),
+    function(x) {
+      stats::weighted.mean(
+        aux$ndvi[aux$seccion == x],
+        aux$numberOfDwellings[aux$seccion == x]
+      )
+    }
+  )
+  sc$ndvi_pond<- ponderado[match(sc$seccion, names(ponderado))]
+
+  # transformaciones para devolver mismo objeto introducido por usuario
+  sc <- sf::st_transform(sc, crs_sc)
+  colnames(sc)[colnames(sc)=='seccion'] <- id_sc
+  sc <- transformar(sc, a_sp)
+
+  # Devolver raster?
+  if (isTRUE(dev_raster)){
+    sc <- list(sc = sc, ndvi = ndvi)
+    message("Resultado compuesto por una lista de dos elementos:
+
+            [1] Objeto espacial con la columna 'ndvi'
+            [2] RasterLayer resultado calculo ndvi
+            ")
+  }
+  return(sc)
+}
