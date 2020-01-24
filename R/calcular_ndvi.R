@@ -144,7 +144,7 @@ dir_img = "01_data/landsat/2000"
 
 catastro <- st_read("01_data/catastro/valencia/A.ES.SDGC.BU.46900.building.gml")
 #subset a quitar
-catastro <- catastro[sample(nrow(catastro),1000),]
+catastro <- catastro[sample(nrow(catastro),5000),]
 
 load('01_data/cartografia.rda')
 sc <- cartografia[cartografia$NMUN=='Valencia',]
@@ -152,12 +152,17 @@ sc <- cartografia[cartografia$NMUN=='Valencia',]
 landsat8 <-  FALSE
 radio <- 300
 calculo <- mean
+id_sc <- 'seccion'
 
 rm(cartografia)
 
 #####################
 # Inicio de la funcion
 #####################
+# comprobar que el id_sc existe y cambiar por seccion
+sc <- id_existe(sc, id_sc)
+crs_sc <- sf::st_crs(sc)
+
 # comprobar que la capa de catastro sea la adecuada
 if (length(grep('numberOfDwellings', colnames(catastro))) == 0 |
     length(grep('gml_id', colnames(catastro))) == 0){
@@ -186,7 +191,7 @@ bandas <- raster::crop(bandas, epsg_igual(bandas, sc))
 # Calculo de el NDVI
 ndvi <- (bandas$nir-bandas$red)/(bandas$nir+bandas$red) # NDVI
 ndvi[ndvi>1] <- 1; ndvi[ndvi< (-1)] <- -1 #Reescalado para evitar outliers
-
+rm(bandas)
 
 # extraer centroides
 catastro <- sf::st_centroid(catastro)
@@ -198,5 +203,26 @@ catastro$ndvi <- raster::extract(ndvi,
                                             transformar(catastro, a_sp = TRUE)),
                                  fun=calculo,
                                  na.rm=TRUE)[,1]
-sc <- transformar(sc)
-kk <- st_intersection(sc, epsg_igual(sc, catastro))
+
+# intersectar edificios con las secciones censales
+aux <- transformar(sc)
+aux <- sf::st_intersection(epsg_igual(catastro, aux), sf::st_centroid(catastro))
+
+# calculo de la ponderación
+ponderado <- sapply(
+  unique(aux$seccion),
+  function(x) {
+    stats::weighted.mean(
+      aux$ndvi[aux$seccion == x],
+      aux$numberOfDwellings[aux$seccion == x]
+    )
+  }
+)
+sc$ndvi_pond<- ponderado[match(sc$seccion, names(ponderado))]
+
+# transformaciones para devolver mismo objeto introducido por usuario
+sc <- sf::st_transform(sc, crs_sc)
+colnames(sc)[colnames(sc)=='seccion'] <- id_sc
+sc <- transformar(sc, a_sp)
+
+return(sc)
