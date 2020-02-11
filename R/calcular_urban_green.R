@@ -60,7 +60,7 @@
 #' @encoding UTF-8
 #'
 #' @export
-area_verde <- function(sc, id_sc, urban, categorias = c(14100,14200)){
+area_verde <- function(sc, id_sc, urban, categorias = c(14100,14200), puntos = FALSE, radio = 300){
   # Comprobar el año del mapa urban atlas y Subset por categorias: por defecto 'Green urban areas' y 'Sports and leisure facilities'
   urban <- ano_urban(urban, categorias)
 
@@ -75,6 +75,12 @@ area_verde <- function(sc, id_sc, urban, categorias = c(14100,14200)){
   # comprobar epsg guardando orginal para cambiar al final
   epsg_sc <- sf::st_crs(sc)
   sc <- epsg_igual(urban, sc)
+
+  # si la entrada son puntos hacer buffer
+  if (isTRUE(puntos)){
+    geometria <- sc[,'geometry']
+    sc <- sf::st_buffer(sc, radio)
+  }
 
   # calculo del area de cada sc y de su interseccion
   sc$area_sc <- sf::st_area(sc)
@@ -102,6 +108,11 @@ area_verde <- function(sc, id_sc, urban, categorias = c(14100,14200)){
   sc$area_verde <- aux$area_verde[match(sc$seccion, aux$seccion)]
   sc[is.na(sc$area_verde),'area_verde'] <- 0
   colnames(sc)[colnames(sc)=='seccion'] <- id_sc
+
+  # si la entrada son puntos hacer buffer
+  if (isTRUE(puntos)){
+    sc[,'geometry'] <- geometria
+  }
 
   # transformar coordenadas y formato sp si es necesario
   sc <- sf::st_transform(sc, epsg_sc)
