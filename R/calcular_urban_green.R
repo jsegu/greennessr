@@ -19,7 +19,7 @@
 #' @param radio Numérico: Se utiliza si el parámetro \code{puntos = TRUE}. Distancia en metros del radio
 #' del buffer, por defecto 300m.
 #'
-#' @usage area_verde(sc, id_sc, urban, categorias = c(14100, 14200))
+#' @usage area_verde(sc, id_sc, urban, categorias = c(14100, 14200), puntos = FALSE, radio = 300)
 #'
 #' @details La función empieza calculando el área de cada sección censal (sc). Luego intersecta las sc
 #' con las áreas verdes definidas por el mapa urban atlas, calcula el área de las intersecciones y
@@ -56,7 +56,9 @@
 #' sc         = secciones_castellon,
 #' id_sc      = 'seccion',
 #' urban      = urban_atlas_castellon,
-#' categorias = c(14100, 14200)
+#' categorias = c(14100, 14200),
+#' puntos     = FALSE,
+#' radio      = 300
 #' )
 #'
 #' summary(castellon_area_verde$area_verde)

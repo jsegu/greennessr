@@ -14,8 +14,14 @@
 #' @param dev_raster Lógico: Si es TRUE en el resultado se incluye la capa ráster con los valores del NDVI.
 #' @param landsat8 Lógico: Por defecto se calculan de manera automática las imagenes de landsat-5
 #' y landsat-7. En caso de querer calcular una imagen landsat-8, cambiar el parámetro a \code{TRUE}.
+#' @param puntos Boleano \code{TRUE o FALSE:} Por defecto es \code{FALSE}, poner a \code{TRUE} si la base
+#' de datos \code{sc} es de puntos, dónde la propia función creará un buffer para convertir el dato
+#' puntual a polígono.
+#' @param radio Numérico: Se utiliza si el parámetro \code{puntos = TRUE}. Distancia en metros del radio
+#' del buffer, por defecto 300m.
 #'
-#' @usage calcular_ndvi(dir_img, sc, calculo = mean, dev_raster = FALSE, landsat8 = FALSE)
+#' @usage calcular_ndvi(dir_img, sc, calculo = mean, dev_raster = FALSE, landsat8 = FALSE, puntos = FALSE,
+#' radio = 300)
 #'
 #' @details El índice de vegetación normalizado (NDVI) se utiliza para estimar la cantidad, calidad y el
 #' desarrollo de la vegetación. Este estimador se calcula mediante los valores de intensidad de la radiación
@@ -64,14 +70,17 @@
 #'   sc         = sc_valencia,
 #'   calculo    = median,
 #'   dev_raster = FALSE,
-#'   landsat8   = FALSE
+#'   landsat8   = FALSE,
+#'   puntos     = FALSE,
+#'   radio      = 300
 #' )
 #' sc_valencia}
 #'
 #' @encoding UTF-8
 #'
 #' @export
-calcular_ndvi <- function(dir_img, sc, calculo = mean, dev_raster = FALSE, landsat8 = FALSE){
+calcular_ndvi <- function(dir_img, sc, calculo = mean, dev_raster = FALSE, landsat8 = FALSE,
+                          puntos = FALSE, radio = 300){
 
   # Para cambiar patern en funcion del satelite
   if (isFALSE(landsat8)){
@@ -88,6 +97,12 @@ calcular_ndvi <- function(dir_img, sc, calculo = mean, dev_raster = FALSE, lands
 
   # implementar la sf
   a_sf <- constancia(sc)
+
+  # si la entrada son puntos hacer buffer
+  if (isTRUE(puntos)){
+    geometria <- sc[,'geometry']
+    sc <- sf::st_buffer(sc, radio)
+  }
   if (class(sc)[1] == "sf"){
     sc <- sp::SpatialPolygonsDataFrame(
       sf::as_Spatial(sc),
@@ -111,7 +126,12 @@ calcular_ndvi <- function(dir_img, sc, calculo = mean, dev_raster = FALSE, lands
   # pasar a sf si conviene
   if (a_sf == FALSE){
     sc <- sf::st_as_sf(sc)
+
+    if (isTRUE(puntos)){
+      sc[,'geometry'] <- geometria
+    }
   }
+
   res <- sc
 
   # Devolver raster?

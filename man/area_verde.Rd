@@ -5,7 +5,7 @@
 \alias{area_verde}
 \title{Calculo de la superficie de areas verdes urbanas}
 \usage{
-area_verde(sc, id_sc, urban, categorias = c(14100, 14200))
+area_verde(sc, id_sc, urban, categorias = c(14100, 14200), puntos = FALSE, radio = 300)
 }
 \arguments{
 \item{sc}{Objeto espacial \code{(SpatialPolygonsDataFrame / sf):} con las geometrías poligonales
@@ -69,7 +69,9 @@ castellon_area_verde <- area_verde(
 sc         = secciones_castellon,
 id_sc      = 'seccion',
 urban      = urban_atlas_castellon,
-categorias = c(14100, 14200)
+categorias = c(14100, 14200),
+puntos     = FALSE,
+radio      = 300
 )
 
 summary(castellon_area_verde$area_verde)

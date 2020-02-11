@@ -5,7 +5,8 @@
 \alias{calcular_ndvi}
 \title{Calculo del NDVI para cada seccion censal}
 \usage{
-calcular_ndvi(dir_img, sc, calculo = mean, dev_raster = FALSE, landsat8 = FALSE)
+calcular_ndvi(dir_img, sc, calculo = mean, dev_raster = FALSE, landsat8 = FALSE, puntos = FALSE,
+radio = 300)
 }
 \arguments{
 \item{dir_img}{Carácter: Directorio donde se encuentra la imagen Landsat, tiene que estar descomprimida.}
@@ -20,6 +21,13 @@ Se puede modificar (ej. median, min o max).}
 
 \item{landsat8}{Lógico: Por defecto se calculan de manera automática las imagenes de landsat-5
 y landsat-7. En caso de querer calcular una imagen landsat-8, cambiar el parámetro a \code{TRUE}.}
+
+\item{puntos}{Boleano \code{TRUE o FALSE:} Por defecto es \code{FALSE}, poner a \code{TRUE} si la base
+de datos \code{sc} es de puntos, dónde la propia función creará un buffer para convertir el dato
+puntual a polígono.}
+
+\item{radio}{Numérico: Se utiliza si el parámetro \code{puntos = TRUE}. Distancia en metros del radio
+del buffer, por defecto 300m.}
 }
 \value{
 El resultado que devuelve es el mismo objeto espacial \code{(SpatialPolygonsDataFrame / sf)}
@@ -77,7 +85,9 @@ sc_valencia <- calcular_ndvi(
   sc         = sc_valencia,
   calculo    = median,
   dev_raster = FALSE,
-  landsat8   = FALSE
+  landsat8   = FALSE,
+  puntos     = FALSE,
+  radio      = 300
 )
 sc_valencia}
 
