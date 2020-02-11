@@ -17,8 +17,15 @@ sección censal.}
 \item{urban}{Objeto espacial \code{(SpatialPolygonsDataFrame / sf):} con las geometrías poligonales
 del mapa urban atlas.}
 
-\item{categorias}{\code{Vector:} Correspondiente a las categorías de espacios verdes de la base de datos
+\item{categorias}{Vector: Correspondiente a las categorías de espacios verdes de la base de datos
 del urban atlas.}
+
+\item{puntos}{Boleano \code{TRUE o FALSE:} Por defecto es \code{FALSE}, poner a \code{TRUE} si la base
+de datos \code{sc} es de puntos, dónde la propia función creará un buffer para convertir el dato
+puntual a polígono.}
+
+\item{radio}{Numérico: Se utiliza si el parámetro \code{puntos = TRUE}. Distancia en metros del radio
+del buffer, por defecto 300m.}
 }
 \value{
 El resultado que devuelve es el mismo objeto espacial \code{(SpatialPolygonsDataFrame / sf)}

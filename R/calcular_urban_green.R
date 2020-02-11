@@ -11,8 +11,13 @@
 #' sección censal.
 #' @param urban Objeto espacial \code{(SpatialPolygonsDataFrame / sf):} con las geometrías poligonales
 #' del mapa urban atlas.
-#' @param categorias \code{Vector:} Correspondiente a las categorías de espacios verdes de la base de datos
+#' @param categorias Vector: Correspondiente a las categorías de espacios verdes de la base de datos
 #' del urban atlas.
+#' @param puntos Boleano \code{TRUE o FALSE:} Por defecto es \code{FALSE}, poner a \code{TRUE} si la base
+#' de datos \code{sc} es de puntos, dónde la propia función creará un buffer para convertir el dato
+#' puntual a polígono.
+#' @param radio Numérico: Se utiliza si el parámetro \code{puntos = TRUE}. Distancia en metros del radio
+#' del buffer, por defecto 300m.
 #'
 #' @usage area_verde(sc, id_sc, urban, categorias = c(14100, 14200))
 #'
