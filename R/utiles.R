@@ -61,7 +61,8 @@ transformar <- function(x, a_sp = FALSE){
 
 constancia <- function(x){
   if (is.na(sf::st_crs(x))){
-    stop("Objeto secciones censales no valido: Solo son validos para el calculo los objetos espaciales ej. SpatialPolygons o sf")
+    stop("Objeto no valido: Solo son validos para el calculo los objetos espaciales ej: SpatialPolygons o sf. En
+         caso de que este introduciendo uno de los objetos espaciales mencionados,compruebe si la capa esta proyectada.")
   }
   if (class(x)[1] != "sf"){
     return(TRUE)

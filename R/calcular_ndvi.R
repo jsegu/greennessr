@@ -119,8 +119,8 @@ calcular_ndvi <- function(dir_img, sc, calculo = mean, dev_raster = FALSE, lands
     res <- list(sc = res, ndvi = ndvi)
     message("Resultado compuesto por una lista de dos elementos:
 
-            [1] Objeto espacial con la columna 'ndvi'
-            [2] RasterLayer resultado calculo ndvi
+            [[1]] Objeto espacial con la columna 'ndvi'
+            [[2]] RasterLayer resultado calculo ndvi
             ")
   }
   return(res)
@@ -131,6 +131,9 @@ calcular_ndvi <- function(dir_img, sc, calculo = mean, dev_raster = FALSE, lands
 #' @encoding UTF-8
 #' @export
 ndvi_ponderado <- function(dir_img, sc, id_sc, catastro, radio =300, calculo = mean, dev_raster = FALSE, landsat8 = FALSE){
+
+  # siempre a sf
+  catastro <- sf::st_as_sf(catastro)
 
   # comprobar que la capa de catastro sea la adecuada
   if (length(grep('numberOfDwellings', colnames(catastro))) == 0 |
@@ -143,7 +146,7 @@ ndvi_ponderado <- function(dir_img, sc, id_sc, catastro, radio =300, calculo = m
   catastro <- catastro[catastro$currentUse %in% '1_residential', c('gml_id','numberOfDwellings')]
   catastro$gml_id <- as.character(catastro$gml_id)
 
-  # Para cambiar patern en funcion del satelite
+    # Para cambiar patern en funcion del satelite
   if (isFALSE(landsat8)){
     satelite <- 'B3|B4'
   } else{
@@ -156,6 +159,7 @@ ndvi_ponderado <- function(dir_img, sc, id_sc, catastro, radio =300, calculo = m
   names(bandas)<- c("red", "nir")
 
   # implementar la sp
+  #contancia para cambiar si es necesario al final
   a_sf <- constancia(sc)
   if (class(sc)[1] == "sf"){
     sc <- sp::SpatialPolygonsDataFrame(
@@ -201,18 +205,15 @@ ndvi_ponderado <- function(dir_img, sc, id_sc, catastro, radio =300, calculo = m
   sc$ndvi_pond<- ponderado[match(sc$seccion, names(ponderado))]
 
   # transformaciones para devolver mismo objeto introducido por usuario
-  # sc <- sp::spTransform(sc, raster::crs(x))
-  # sc <- sf::st_transform(sc, crs_sc)
-  # colnames(sc)[colnames(sc)=='seccion'] <- id_sc
-  # sc <- transformar(sc, a_sp)
+  sc <- transformar(sc, a_sf)
 
   # Devolver raster?
   if (isTRUE(dev_raster)){
     sc <- list(sc = sc, ndvi = ndvi)
     message("Resultado compuesto por una lista de dos elementos:
 
-            [1] Objeto espacial con la columna 'ndvi'
-            [2] RasterLayer resultado calculo ndvi
+            [[1]] Objeto espacial con la columna 'ndvi'
+            [[2]] RasterLayer resultado calculo ndvi
             ")
   }
   return(sc)
