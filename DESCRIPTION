@@ -2,7 +2,7 @@ Package: greennessr
 Type: Package
 Title: Espacios verdes en ciudades
 Date: 2019-12-13
-Version: 1.0.0
+Version: 1.1.0
 Authors@R: 
     c(person(given = "Jordi",
              family = "Segu-Tell",
