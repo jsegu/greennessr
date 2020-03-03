@@ -2,7 +2,8 @@
 # Devuelve mismo EPSG en las dos capas en funcion cogiendo el de la x
 epsg_igual <- function(x, y){
   if (is.na(raster::crs(y)) | is.na(raster::crs(x))){
-    stop("Objeto no valido: Solo son validos para el calculo los objetos espaciales ej. SpatialPolygons o sf")
+    stop("Objeto no valido: Solo son validos para el calculo los objetos espaciales ej: SpatialPolygons o sf. En
+         caso de que este introduciendo uno de los objetos espaciales mencionados,compruebe si la capa esta proyectada.")
   }
   else if (as.character(raster::crs(x)) != as.character(raster::crs(y))){
     if (class(x)[1] == "sf" & class(y)[1] == "sf"){
@@ -43,7 +44,8 @@ id_existe <- function(x, nombre){
 
 transformar <- function(x, a_sp = FALSE){
   if (is.na(sf::st_crs(x))){
-    stop("Objeto no valido: Solo son validos para el calculo los objetos espaciales ej. SpatialPolygons o sf")
+    stop("Objeto no valido: Solo son validos para el calculo los objetos espaciales ej: SpatialPolygons o sf. En
+         caso de que este introduciendo uno de los objetos espaciales mencionados,compruebe si la capa esta proyectada.")
   }
   if (class(x)[1] != "sf"){
     x <- sf::st_as_sf(x)
@@ -59,7 +61,8 @@ transformar <- function(x, a_sp = FALSE){
 
 constancia <- function(x){
   if (is.na(sf::st_crs(x))){
-    stop("Objeto secciones censales no valido: Solo son validos para el calculo los objetos espaciales ej. SpatialPolygons o sf")
+    stop("Objeto no valido: Solo son validos para el calculo los objetos espaciales ej: SpatialPolygons o sf. En
+         caso de que este introduciendo uno de los objetos espaciales mencionados,compruebe si la capa esta proyectada.")
   }
   if (class(x)[1] != "sf"){
     return(TRUE)

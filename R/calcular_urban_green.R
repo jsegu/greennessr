@@ -214,6 +214,9 @@ area_verde <- function(sc, id_sc, urban, categorias = c(14100,14200), puntos = F
 acceso_verde <- function(sc, id_sc, urban, catastro, radio = 300, categorias = c(14100,14200)){
   crs_sc <- sf::st_crs(sc)
 
+  # siempre a sf
+  catastro <- sf::st_as_sf(catastro)
+
   # comprobar que la capa de catastro sea la adecuada
   if (length(grep('numberOfDwellings', colnames(catastro))) == 0 |
       length(grep('gml_id', colnames(catastro))) == 0){

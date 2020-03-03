@@ -3,3 +3,4 @@
 export(acceso_verde)
 export(area_verde)
 export(calcular_ndvi)
+export(ndvi_ponderado)
