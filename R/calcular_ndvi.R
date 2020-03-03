@@ -126,13 +126,11 @@ calcular_ndvi <- function(dir_img, sc, calculo = mean, dev_raster = FALSE, lands
   return(res)
 }
 
-#' @title Calculo del NDVI para cada seccion censal ponderado
+#' @title Calculo del NDVI seccion censal ponderado
 #'
 #' @encoding UTF-8
 #' @export
 ndvi_ponderado <- function(dir_img, sc, id_sc, catastro, radio =300, calculo = mean, dev_raster = FALSE, landsat8 = FALSE){
-  # comprobar que el id_sc existe y cambiar por seccion
-
 
   # comprobar que la capa de catastro sea la adecuada
   if (length(grep('numberOfDwellings', colnames(catastro))) == 0 |
@@ -140,12 +138,7 @@ ndvi_ponderado <- function(dir_img, sc, id_sc, catastro, radio =300, calculo = m
     stop('Objeto catastro no valido: Asegurese que ha seleccionado la capa "BUILDING"
          y introduzcala a la funcion sin eliminar ni modificar ninguna variable')
   }
-  a_sp <- constancia(sc)
-  sc <- transformar(sc)
-  catastro <- transformar(catastro)
-  sc <- epsg_igual(catastro, sc)
-  sc <- id_existe(sc, id_sc)
-  crs_sc <- sf::st_crs(sc)
+
   # filtros a los datos
   catastro <- catastro[catastro$currentUse %in% '1_residential', c('gml_id','numberOfDwellings')]
   catastro$gml_id <- as.character(catastro$gml_id)
@@ -161,8 +154,19 @@ ndvi_ponderado <- function(dir_img, sc, id_sc, catastro, radio =300, calculo = m
   dir <- list.files(path = dir_img, pattern = satelite, full.names = TRUE)
   bandas <- raster::stack(dir)
   names(bandas)<- c("red", "nir")
+
+  # implementar la sp
+  a_sf <- constancia(sc)
+  if (class(sc)[1] == "sf"){
+    sc <- sp::SpatialPolygonsDataFrame(
+      sf::as_Spatial(sc),
+      data = as.data.frame(sc)[, setdiff(colnames(sc), attr(sc, "sf_column"))]
+    )
+  }
+
   # Cortar bandas con sc
   bandas <- raster::crop(bandas, epsg_igual(bandas, sc))
+
   # Calculo de el NDVI
   ndvi <- (bandas$nir-bandas$red)/(bandas$nir+bandas$red) # NDVI
   ndvi[ndvi>1] <- 1; ndvi[ndvi< (-1)] <- -1 #Reescalado para evitar outliers
@@ -170,18 +174,19 @@ ndvi_ponderado <- function(dir_img, sc, id_sc, catastro, radio =300, calculo = m
 
   # extraer centroides
   catastro <- sf::st_centroid(catastro)
-  # buffer a lo urbano
+
+  # buffer
   catastro <- sf::st_buffer(catastro, radio)
+
   # Extraer datos a nivel de cada parcela edificio
   catastro$ndvi <- raster::extract(ndvi,
-                                   epsg_igual(ndvi,
-                                              transformar(catastro, a_sp = TRUE)),
+                                   epsg_igual(ndvi,transformar(catastro, a_sp = TRUE)),
                                    fun=calculo,
                                    na.rm=TRUE)[,1]
 
   # intersectar edificios con las secciones censales
   aux <- transformar(sc)
-  aux <- sf::st_intersection(epsg_igual(catastro, aux), sf::st_centroid(catastro))
+  aux <- sf::st_intersection(epsg_igual(catastro,aux), sf::st_centroid(catastro))
 
   # calculo de la ponderación
   ponderado <- sapply(
@@ -196,9 +201,10 @@ ndvi_ponderado <- function(dir_img, sc, id_sc, catastro, radio =300, calculo = m
   sc$ndvi_pond<- ponderado[match(sc$seccion, names(ponderado))]
 
   # transformaciones para devolver mismo objeto introducido por usuario
-  sc <- sf::st_transform(sc, crs_sc)
-  colnames(sc)[colnames(sc)=='seccion'] <- id_sc
-  sc <- transformar(sc, a_sp)
+  # sc <- sp::spTransform(sc, raster::crs(x))
+  # sc <- sf::st_transform(sc, crs_sc)
+  # colnames(sc)[colnames(sc)=='seccion'] <- id_sc
+  # sc <- transformar(sc, a_sp)
 
   # Devolver raster?
   if (isTRUE(dev_raster)){
