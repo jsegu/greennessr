@@ -8,28 +8,34 @@ rm(list=setdiff(ls(), "datos"))
 
 head(datos)
 
-ponderar <- function(x, ndvi, urban){
-
-}
-
 x <- datos
 ndvi <- 'ndvi'
 urban <- 'area_verde'
 
-###
-##### aqui se inicia la funcion
-#sacar valores
-ndvi <- x[,c(ndvi)]
-urban <- x[,c(urban)]
-correlacion <- cor(ndvi, urban)
+ponderar <- function(x, urban, ndvi){
+  #sacar valores
+  ndvi <- x[,c(ndvi)]
+  urban <- x[,c(urban)]
+  correlacion <- cor(ndvi, urban)
 
-#estanderizar
-ndvi <- (ndvi+1)*50
-correlacion <- (correlacion+1)/2
+  #estanderizar
+  ndvi <- (ndvi+1)*50
+  correlacion <- (correlacion+1)/2
 
-#indice
-ponderado <- (urban+(ndvi*correlacion))/2
+  #indice ponderado
+  x$ponderado <- (urban+(ndvi*correlacion))/2
 
-## crear ponderacion
-pond_cat <- lapply(ponderado,
-                   FUN = )
+  ## crear categorias
+  x$green_cat <- transform(x$ponderado,
+                           check = ave(x$ponderado, FUN=function(x){
+                             ifelse(x<quantile(x,0.25), '1',
+                                    ifelse(x<quantile(x,0.5),'2',
+                                           ifelse(x<(quantile(x,0.75)),'3','4'
+                                           )))
+                           })
+  )[,2]
+
+  return(x)
+}
+
+kk <- ponderar(datos, 'area_verde', 'ndvi')
