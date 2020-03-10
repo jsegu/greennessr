@@ -96,7 +96,7 @@ greenness <- function(x, urban, ndvi){
                   ifelse(x<(quantile(x,0.75)),'3','4'
                   )))}
   #indice ponderado
-  res$greenness <- x[,c(urban)]*0.8+((x[,c(ndvi)]+1)*((cor(x[,c(ndvi)], x[,c(urban)])+1))/2)*0.2
+  res$greenness <- x[,c(urban)]*0.75+((x[,c(ndvi)]+1)*50*((cor(x[,c(ndvi)], x[,c(urban)])+1))/2)*0.25
 
   ## crear categorias
   res$green_cat <- a(res$greenness)
