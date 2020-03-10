@@ -70,3 +70,32 @@ constancia <- function(x){
     return(FALSE)
   }
 }
+
+#' @title Extracción índice greenness
+#'
+#' @description A partir de las variables calculadas con las funciones de extracción de la superficie
+#' verde urbana (\link[greennessr]{area_verde} y \link[greennessr]{acceso_verde}) y de las funciones
+#' de extracción del NDVI (\link[greennessr]{ndvi} y \link[greennessr]{acceso_ndvi}). Se construye
+#' un índice combinado “greenness” calculado con una media ponderada entre el área verde urbana,
+#' el NDVI y la correlación entre dichas variables, dando mayor peso al área verde urbana “urban
+#' atlas”.
+#'
+#' @encoding UTF-8
+#'
+#' @export
+greenness <- function(x, urban, ndvi){
+  res <- x
+  x <- as.data.frame(x)
+  a <- function(x){
+    ifelse(x<quantile(x,0.25), '1',
+           ifelse(x<quantile(x,0.5),'2',
+                  ifelse(x<(quantile(x,0.75)),'3','4'
+                  )))}
+  #indice ponderado
+  res$greenness <- (x[,c(urban)]+((x[,c(ndvi)]+1)*16.333*(cor(x[,c(ndvi)], x[,c(urban)])+1)/2))/2
+
+  ## crear categorias
+  res$green_cat <- a(res$greenness)
+
+  return(res)
+}

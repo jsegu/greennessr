@@ -47,7 +47,7 @@
 #  # ver nombre columna id secciones
 #' head(secciones_castellon) # 'secccion'
 #'
-#' castellon_area_verde <- area_verde(
+#' castellon_area_verde <- area_urban(
 #' sc         = secciones_castellon,
 #' id_sc      = 'seccion',
 #' urban      = urban_atlas_castellon,
@@ -60,7 +60,7 @@
 #' @encoding UTF-8
 #'
 #' @export
-area_verde <- function(sc, id_sc, urban, categorias = c(14100,14200)){
+area_urban <- function(sc, id_sc, urban, categorias = c(14100,14200)){
   # Comprobar el año del mapa urban atlas y Subset por categorias: por defecto 'Green urban areas' y 'Sports and leisure facilities'
   urban <- ano_urban(urban, categorias)
 
@@ -118,7 +118,7 @@ area_verde <- function(sc, id_sc, urban, categorias = c(14100,14200)){
 #' correspondientes a 'Green urban areas' y Sports and leisure facilities', pero estas se pueden modificar
 #' con el parámetro \code{categorias}.
 #'
-#' @details Esta función es una variante más compleja de \link[greennessr]{area_verde}, que tiene en cuenta
+#' @details Esta función es una variante más compleja de \link[greennessr]{area_urban}, que tiene en cuenta
 #' la accesibilidad a espacios verdes urbanos de los habitantes de una sección censal en función de la
 #' ubicación de su edificio. En primer lugar la se extrae el centroide de cada edificio del mapa catastral,
 #' seguidamente se genera un buffer de 300 metros (modificable con el parámetro \code{radio}) que
@@ -179,7 +179,7 @@ area_verde <- function(sc, id_sc, urban, categorias = c(14100,14200)){
 #  # ver nombre columna id secciones
 #' head(secciones_castellon) # 'secccion'
 #'
-#' accs_verde <- acceso_verde(
+#' accs_verde <- acceso_urban(
 #'   sc         = secciones_castellon,
 #'   id_sc      = 'seccion',
 #'   urban      = urban_atlas_castellon,
@@ -193,7 +193,7 @@ area_verde <- function(sc, id_sc, urban, categorias = c(14100,14200)){
 #' @encoding UTF-8
 #'
 #' @export
-acceso_verde <- function(sc, id_sc, urban, catastro, radio = 300, categorias = c(14100,14200)){
+acceso_urban <- function(sc, id_sc, urban, catastro, radio = 300, categorias = c(14100,14200)){
   crs_sc <- sf::st_crs(sc)
 
   # siempre a sf

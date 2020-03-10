@@ -15,7 +15,7 @@
 #' @param landsat8 Lógico: Por defecto se calculan de manera automática las imagenes de landsat-5
 #' y landsat-7. En caso de querer calcular una imagen landsat-8, cambiar el parámetro a \code{TRUE}.
 #'
-#' @usage calcular_ndvi(dir_img, sc, calculo = mean, dev_raster = FALSE, landsat8 = FALSE)
+#' @usage ndvi(dir_img, sc, calculo = mean, dev_raster = FALSE, landsat8 = FALSE)
 #'
 #' @details El índice de vegetación normalizado (NDVI) se utiliza para estimar la cantidad, calidad y el
 #' desarrollo de la vegetación. Este estimador se calcula mediante los valores de intensidad de la radiación
@@ -59,7 +59,7 @@
 #' @examples
 #' \dontrun{
 #' library(greennessr)
-#' sc_valencia <- calcular_ndvi(
+#' sc_valencia <- ndvi(
 #'   dir_img    = "~01_data/LE07_L1TP_199033_20000621_20170211_01_T1",
 #'   sc         = sc_valencia,
 #'   calculo    = median,
@@ -71,7 +71,7 @@
 #' @encoding UTF-8
 #'
 #' @export
-calcular_ndvi <- function(dir_img, sc, calculo = mean, dev_raster = FALSE, landsat8 = FALSE){
+ndvi <- function(dir_img, sc, calculo = mean, dev_raster = FALSE, landsat8 = FALSE){
 
   # Para cambiar patern en funcion del satelite
   if (isFALSE(landsat8)){
@@ -149,7 +149,7 @@ calcular_ndvi <- function(dir_img, sc, calculo = mean, dev_raster = FALSE, lands
 #' @param landsat8 Lógico: Por defecto se calculan de manera automática las imagenes de landsat-5
 #' y landsat-7. En caso de querer calcular una imagen landsat-8, cambiar el parámetro a \code{TRUE}.
 #'
-#' @details Esta función es una variante más compleja de \link[greennessr]{calcular_ndvi}, teniendo
+#' @details Esta función es una variante más compleja de \link[greennessr]{ndvi}, teniendo
 #' en cuenta la accesibilidad a espacios verdes urbanos de los habitantes de una sección censal en
 #' función de la ubicación de su edificio. En primer lugar la se extrae el centroide de cada
 #' edificio del mapa catastral,seguidamente se genera un buffer de 300 metros (modificable con
@@ -207,7 +207,7 @@ calcular_ndvi <- function(dir_img, sc, calculo = mean, dev_raster = FALSE, lands
 #' @examples
 #' \dontrun{
 #' library(greennessr)
-#' sc_cordoba <- ndvi_ponderado(
+#' sc_cordoba <- acceso_ndvi(
 #'   dir_img = '~01_data/landsat/Cordoba',
 #'   sc = cordoba_sc,
 #'   id_sc = "seccion",
@@ -221,7 +221,7 @@ calcular_ndvi <- function(dir_img, sc, calculo = mean, dev_raster = FALSE, lands
 #'
 #' @encoding UTF-8
 #' @export
-ndvi_ponderado <- function(dir_img, sc, id_sc, catastro, radio =300, calculo = mean, dev_raster = FALSE, landsat8 = FALSE){
+acceso_ndvi <- function(dir_img, sc, id_sc, catastro, radio =300, calculo = mean, dev_raster = FALSE, landsat8 = FALSE){
 
   # siempre a sf
   catastro <- sf::st_as_sf(catastro)
