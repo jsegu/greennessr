@@ -80,6 +80,10 @@ constancia <- function(x){
 #' el NDVI y la correlación entre dichas variables, dando mayor peso al área verde urbana “urban
 #' atlas”.
 #'
+#' @param x
+#'
+#'
+#'
 #' @encoding UTF-8
 #'
 #' @export
@@ -92,7 +96,7 @@ greenness <- function(x, urban, ndvi){
                   ifelse(x<(quantile(x,0.75)),'3','4'
                   )))}
   #indice ponderado
-  res$greenness <- (x[,c(urban)]+((x[,c(ndvi)]+1)*16.333*(cor(x[,c(ndvi)], x[,c(urban)])+1)/2))/2
+  res$greenness <- x[,c(urban)]*0.8+((x[,c(ndvi)]+1)*((cor(x[,c(ndvi)], x[,c(urban)])+1))/2)*0.2
 
   ## crear categorias
   res$green_cat <- a(res$greenness)
