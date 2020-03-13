@@ -88,8 +88,10 @@ load(file = 'c:/proyectos/_teletrabajo_coronavirus/_oviedo/datos_de_entrada.RDat
 
   # poner en catastro id seccion censal i transformar a data.frame
   aux <- as.data.frame(sf::st_intersection(epsg_igual(catastro,sc), catastro))
+  rm(catastro)
 
   # media ponderada de todos los items a la vez
+  # con correlacion
   verde <- sapply(
     unique(aux$seccion),
     function(x) {
@@ -124,7 +126,72 @@ load(file = 'c:/proyectos/_teletrabajo_coronavirus/_oviedo/datos_de_entrada.RDat
     }
   )
 
+  # sin correlacion
+  verde2 <- sapply(
+    unique(aux$seccion),
+    function(x) {
+      # sacar media ponderada ndvi
+      nd <- stats::weighted.mean(
+        aux$ndvi[aux$seccion == x],
+        aux$numberOfDwellings[aux$seccion == x],
+        na.rm = TRUE
+      )
 
+      # sacar media ponderada urban
+      ur <- stats::weighted.mean(
+          aux$area_i[aux$seccion == x]/(pi*radio^2)*100,
+          aux$numberOfDwellings[aux$seccion == x],
+          na.rm = TRUE
+      )
+      # pasar las secciones censales sin urban a 0
+      ur[is.na(ur)] <- 0
+
+      # calculo de la ponderación con correlacion
+      res <- as.numeric(ur)*0.75+(as.numeric(nd)+1)*50*0.25
+
+      # cambiar los de la correlacion NA (debido a no tener las dos variables en la SC) por solo valor ndvi
+      # if (is.na(res)){
+      #   res <- (as.numeric(nd)+1)*50*0.25
+      # }
+      return(res)
+    }
+  )
+
+
+
+  ########## mirar si se puede calcular la coorelacion de las variables con NA
+  nd <- sapply(
+    unique(aux$seccion),
+    function(x) {
+      # sacar media ponderada ndvi
+      nd <- stats::weighted.mean(
+        aux$ndvi[aux$seccion == x],
+        aux$numberOfDwellings[aux$seccion == x],
+        na.rm = TRUE
+      )
+    }
+  )
+  ur <- sapply(
+    unique(aux$seccion),
+    function(x) {
+      # sacar media ponderada ndvi
+      ur <- stats::weighted.mean(
+        aux$area_i[aux$seccion == x]/(pi*radio^2)*100,
+        aux$numberOfDwellings[aux$seccion == x],
+        na.rm = TRUE
+      )
+    }
+  )
+
+  ur[is.na(ur)] <- 0
+
+  corre <- sapply(
+    unique(aux$seccion),
+    function(x) {
+      # sacar media ponderada ndvi
+      stats::cor(aux$area_i[aux$seccion == x], aux$ndvi[aux$seccion == x], use = "na.or.complete")
+    }
+  )
 # }
 
 
