@@ -89,6 +89,32 @@ load(file = 'c:/proyectos/_teletrabajo_coronavirus/_oviedo/datos_de_entrada.RDat
   # poner en catastro id seccion censal i transformar a data.frame
   aux <- as.data.frame(sf::st_intersection(epsg_igual(catastro,sc), catastro))
 
+  # sacar correlacion entre ndvi y urban por sc
+  corre <- sapply(
+    unique(aux$seccion),
+    function(x) {
+      cor(aux$area_i[aux$seccion == x], aux$ndvi[aux$seccion == x])
+    }
+  )
+
+  juntos <- sapply(
+    unique(aux$seccion),
+    function(x) {
+      nd <- stats::weighted.mean(
+        aux$ndvi[aux$seccion == x],
+        aux$numberOfDwellings[aux$seccion == x]
+      )
+      ur <-   stats::weighted.mean(
+          aux$area_i[aux$seccion == x]/(pi*radio^2)*100,
+          aux$numberOfDwellings[aux$seccion == x]
+      )
+      c <- cor(aux$area_i[aux$seccion == x], aux$ndvi[aux$seccion == x])
+    return(as.numeric(ur)+as.numeric(nd)+1)
+    }
+  )
+
+
+
   nd <- sapply(
     unique(aux$seccion),
     function(x) {
@@ -102,11 +128,13 @@ load(file = 'c:/proyectos/_teletrabajo_coronavirus/_oviedo/datos_de_entrada.RDat
     unique(aux$seccion),
     function(x) {
       stats::weighted.mean(
-        sum(aux$area_i[aux$seccion == x])/(pi*radio^2)*100,
+        aux$area_i[aux$seccion == x]/(pi*radio^2)*100,
         aux$numberOfDwellings[aux$seccion == x]
       )
     }
   )
+
+
 
 
     cor(catastro[!is.na(catastro$area_i),c(7)][[1]],catastro[!is.na(catastro$area_i),6][[1]])
