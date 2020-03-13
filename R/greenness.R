@@ -89,55 +89,41 @@ load(file = 'c:/proyectos/_teletrabajo_coronavirus/_oviedo/datos_de_entrada.RDat
   # poner en catastro id seccion censal i transformar a data.frame
   aux <- as.data.frame(sf::st_intersection(epsg_igual(catastro,sc), catastro))
 
-  # sacar correlacion entre ndvi y urban por sc
-  corre <- sapply(
+  # media ponderada de todos los items a la vez
+  verde <- sapply(
     unique(aux$seccion),
     function(x) {
-      cor(aux$area_i[aux$seccion == x], aux$ndvi[aux$seccion == x])
-    }
-  )
-
-  juntos <- sapply(
-    unique(aux$seccion),
-    function(x) {
+      # sacar media ponderada ndvi
       nd <- stats::weighted.mean(
         aux$ndvi[aux$seccion == x],
-        aux$numberOfDwellings[aux$seccion == x]
+        aux$numberOfDwellings[aux$seccion == x],
+        na.rm = TRUE
       )
-      ur <-   stats::weighted.mean(
+
+      # sacar media ponderada urban
+      ur <- stats::weighted.mean(
           aux$area_i[aux$seccion == x]/(pi*radio^2)*100,
-          aux$numberOfDwellings[aux$seccion == x]
+          aux$numberOfDwellings[aux$seccion == x],
+          na.rm = TRUE
       )
-      c <- cor(aux$area_i[aux$seccion == x], aux$ndvi[aux$seccion == x])
-    return(as.numeric(ur)+as.numeric(nd)+1)
+      # pasar las secciones censales sin urban a 0
+      ur[is.na(ur)] <- 0
+
+      # sacar correlacion entre ndvi y urban por sc
+      c <- stats::cor(aux$area_i[aux$seccion == x], aux$ndvi[aux$seccion == x], use = "na.or.complete")
+
+      # calculo de la ponderación con correlacion
+      res <- as.numeric(ur)*0.75+((as.numeric(nd)+1)*50*((c+1)/2))*0.25
+
+      # cambiar los de la correlacion NA (debido a no tener las dos variables en la SC) por solo valor ndvi
+      if (is.na(res)){
+        res <- (as.numeric(nd)+1)*50*0.25*0.5
+      }
+
+      return(res)
     }
   )
 
-
-
-  nd <- sapply(
-    unique(aux$seccion),
-    function(x) {
-      stats::weighted.mean(
-        aux$ndvi[aux$seccion == x],
-        aux$numberOfDwellings[aux$seccion == x]
-      )
-    }
-  )
-  ur <- sapply(
-    unique(aux$seccion),
-    function(x) {
-      stats::weighted.mean(
-        aux$area_i[aux$seccion == x]/(pi*radio^2)*100,
-        aux$numberOfDwellings[aux$seccion == x]
-      )
-    }
-  )
-
-
-
-
-    cor(catastro[!is.na(catastro$area_i),c(7)][[1]],catastro[!is.na(catastro$area_i),6][[1]])
 
 # }
 
