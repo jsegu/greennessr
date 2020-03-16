@@ -87,67 +87,87 @@ load(file = 'c:/proyectos/_teletrabajo_coronavirus/_oviedo/datos_de_entrada.RDat
   # save.image(file = 'c:/proyectos/_teletrabajo_coronavirus/_oviedo/calculos_ndvi_y_urban.RData' )
 
   # poner en catastro id seccion censal i transformar a data.frame
-  aux <- as.data.frame(sf::st_intersection(epsg_igual(catastro,sc), catastro))
-  rm(catastro)
+  catastro <- as.data.frame(sf::st_intersection(epsg_igual(catastro,sc), catastro))
 
   # media ponderada de todos los items a la vez
   # con correlacion
-  verde <- sapply(
-    unique(aux$seccion),
+  sc$greenness <- sapply(
+    unique(catastro$seccion),
     function(x) {
       # sacar media ponderada ndvi
       nd <- stats::weighted.mean(
-        aux$ndvi[aux$seccion == x],
-        aux$numberOfDwellings[aux$seccion == x],
+        catastro$ndvi[catastro$seccion == x],
+        catastro$numberOfDwellings[catastro$seccion == x],
         na.rm = TRUE
       )
 
       # sacar media ponderada urban
       ur <- stats::weighted.mean(
-          aux$area_i[aux$seccion == x]/(pi*radio^2)*100,
-          aux$numberOfDwellings[aux$seccion == x],
+          catastro$area_i[catastro$seccion == x]/(pi*radio^2)*100,
+          catastro$numberOfDwellings[catastro$seccion == x],
           na.rm = TRUE
       )
       # pasar las secciones censales sin urban a 0
       ur[is.na(ur)] <- 0
 
       # sacar correlacion entre ndvi y urban por sc
-      c <- stats::cor(aux$area_i[aux$seccion == x], aux$ndvi[aux$seccion == x], use = "na.or.complete")
+      # c <- stats::cor(catastro$area_i[catastro$seccion == x], catastro$ndvi[catastro$seccion == x], use = "na.or.complete")
 
       # calculo de la ponderación con correlacion
-      res <- as.numeric(ur)*0.75+((as.numeric(nd)+1)*50*((c+1)/2))*0.25
+      # res <- as.numeric(ur)*0.75+((as.numeric(nd)+1)*50*((c+1)/2))*0.25
+      res <- as.numeric(ur)*0.8+(as.numeric(nd)+1)*50*0.2
 
       # cambiar los de la correlacion NA (debido a no tener las dos variables en la SC) por solo valor ndvi
-      if (is.na(res)){
-        res <- (as.numeric(nd)+1)*50*0.25*0.5
-      }
+      # if (is.na(res)){
+      #   res <- (as.numeric(nd)+1)*50*0.25*0.5
+      # }
 
       return(res)
     }
   )
 
+library(leaflet)
+st_crs(sc) <- 25830
+st_crs(sc)
+sc_plot <- st_transform(sc, 4326)
+
+leaflet(sc_plot) %>%
+  addTiles() %>%
+  addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5, opacity = 1.0, fillOpacity = 0.5,
+            fillColor = ~colorQuantile("YlOrRd", greenness)(greenness),
+            popup = sprintf("<b>Greenness: %s</b>", round(sc_plot$greenness, 2)),
+            popupOptions = popupOptions(maxWidth ="100%", closeOnClick = TRUE)
+            )
+# }
+
+
+
+
+
+
+## ## ## ## PRUEBAS ANTIGUAS
   # sin correlacion
   verde2 <- sapply(
-    unique(aux$seccion),
+    unique(catastro$seccion),
     function(x) {
       # sacar media ponderada ndvi
       nd <- stats::weighted.mean(
-        aux$ndvi[aux$seccion == x],
-        aux$numberOfDwellings[aux$seccion == x],
+        catastro$ndvi[catastro$seccion == x],
+        catastro$numberOfDwellings[catastro$seccion == x],
         na.rm = TRUE
       )
 
       # sacar media ponderada urban
       ur <- stats::weighted.mean(
-          aux$area_i[aux$seccion == x]/(pi*radio^2)*100,
-          aux$numberOfDwellings[aux$seccion == x],
-          na.rm = TRUE
+        catastro$area_i[catastro$seccion == x]/(pi*radio^2)*100,
+        catastro$numberOfDwellings[catastro$seccion == x],
+        na.rm = TRUE
       )
       # pasar las secciones censales sin urban a 0
       ur[is.na(ur)] <- 0
 
       # calculo de la ponderación con correlacion
-      res <- as.numeric(ur)*0.75+(as.numeric(nd)+1)*50*0.25
+      res <- as.numeric(ur)*0.8+(as.numeric(nd)+1)*50*0.2
 
       # cambiar los de la correlacion NA (debido a no tener las dos variables en la SC) por solo valor ndvi
       # if (is.na(res)){
@@ -161,23 +181,23 @@ load(file = 'c:/proyectos/_teletrabajo_coronavirus/_oviedo/datos_de_entrada.RDat
 
   ########## mirar si se puede calcular la coorelacion de las variables con NA
   nd <- sapply(
-    unique(aux$seccion),
+    unique(catastro$seccion),
     function(x) {
       # sacar media ponderada ndvi
       nd <- stats::weighted.mean(
-        aux$ndvi[aux$seccion == x],
-        aux$numberOfDwellings[aux$seccion == x],
+        catastro$ndvi[catastro$seccion == x],
+        catastro$numberOfDwellings[catastro$seccion == x],
         na.rm = TRUE
       )
     }
   )
   ur <- sapply(
-    unique(aux$seccion),
+    unique(catastro$seccion),
     function(x) {
       # sacar media ponderada ndvi
       ur <- stats::weighted.mean(
-        aux$area_i[aux$seccion == x]/(pi*radio^2)*100,
-        aux$numberOfDwellings[aux$seccion == x],
+        catastro$area_i[catastro$seccion == x]/(pi*radio^2)*100,
+        catastro$numberOfDwellings[catastro$seccion == x],
         na.rm = TRUE
       )
     }
@@ -186,12 +206,9 @@ load(file = 'c:/proyectos/_teletrabajo_coronavirus/_oviedo/datos_de_entrada.RDat
   ur[is.na(ur)] <- 0
 
   corre <- sapply(
-    unique(aux$seccion),
+    unique(catastro$seccion),
     function(x) {
       # sacar media ponderada ndvi
-      stats::cor(aux$area_i[aux$seccion == x], aux$ndvi[aux$seccion == x], use = "na.or.complete")
+      stats::cor(catastro$area_i[catastro$seccion == x], catastro$ndvi[catastro$seccion == x], use = "na.or.complete")
     }
   )
-# }
-
-
