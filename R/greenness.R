@@ -90,7 +90,7 @@ load(file = 'c:/proyectos/_teletrabajo_coronavirus/_oviedo/datos_de_entrada.RDat
   catastro <- as.data.frame(sf::st_intersection(epsg_igual(catastro,sc), catastro))
 
   # media ponderada de todos los items a la vez
-  # con correlacion
+  # con correlacio
   sc$greenness <- sapply(
     unique(catastro$seccion),
     function(x) {
