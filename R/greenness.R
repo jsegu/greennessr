@@ -67,7 +67,6 @@ load(file = 'c:/proyectos/_teletrabajo_coronavirus/_oviedo/datos_de_entrada.RDat
 
   # buffer con los centroides dentro de urban
   aux <- sf::st_buffer(catastro[catastro$dentro, ], radio)
-  aux$area_bff <- sf::st_area(aux)
 
   # sacar urban
   aux <- sf::st_intersection(aux, urban)
@@ -89,9 +88,8 @@ load(file = 'c:/proyectos/_teletrabajo_coronavirus/_oviedo/datos_de_entrada.RDat
   # poner en catastro id seccion censal i transformar a data.frame
   catastro <- as.data.frame(sf::st_intersection(epsg_igual(catastro,sc), catastro))
 
-  # media ponderada de todos los items a la vez
-  # con correlacio
-  sc$greenness <- sapply(
+  # media ponderada de todos los items
+  sc$ndvi <- sapply(
     unique(catastro$seccion),
     function(x) {
       # sacar media ponderada ndvi
@@ -100,33 +98,25 @@ load(file = 'c:/proyectos/_teletrabajo_coronavirus/_oviedo/datos_de_entrada.RDat
         catastro$numberOfDwellings[catastro$seccion == x],
         na.rm = TRUE
       )
-
+    }
+  )
+  sc$urban <- sapply(
+    unique(catastro$seccion),
+    function(x) {
       # sacar media ponderada urban
-      ur <- stats::weighted.mean(
+      x <- stats::weighted.mean(
           catastro$area_i[catastro$seccion == x]/(pi*radio^2)*100,
           catastro$numberOfDwellings[catastro$seccion == x],
           na.rm = TRUE
       )
-      # pasar las secciones censales sin urban a 0
-      ur[is.na(ur)] <- 0
-
-      # sacar correlacion entre ndvi y urban por sc
-      # c <- stats::cor(catastro$area_i[catastro$seccion == x], catastro$ndvi[catastro$seccion == x], use = "na.or.complete")
-
-      # calculo de la ponderación con correlacion
-      # res <- as.numeric(ur)*0.75+((as.numeric(nd)+1)*50*((c+1)/2))*0.25
-      res <- as.numeric(ur)*0.8+(as.numeric(nd)+1)*50*0.2
-
-      # cambiar los de la correlacion NA (debido a no tener las dos variables en la SC) por solo valor ndvi
-      # if (is.na(res)){
-      #   res <- (as.numeric(nd)+1)*50*0.25*0.5
-      # }
-
-      return(res)
     }
   )
+  sc[is.na(sc$urban),c('urban')] <- 0
 
-library(leaflet)
+  sc$greenness <- as.numeric(sc$urban)*0.8+(as.numeric(sc$ndvi)+1)*50*0.2
+
+
+  library(leaflet)
 st_crs(sc) <- 25830
 st_crs(sc)
 sc_plot <- st_transform(sc, 4326)
