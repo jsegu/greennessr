@@ -125,7 +125,10 @@ leaflet(sc_plot) %>%
   addTiles() %>%
   addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5, opacity = 1.0, fillOpacity = 0.5,
             fillColor = ~colorQuantile("YlOrRd", greenness)(greenness),
-            popup = sprintf("<b>Greenness: %s</b>", round(sc_plot$greenness, 2)),
+            popup = sprintf("<b>Greenness:</b>%s\n
+                             <b>Urban:</b>%s\n
+                             <b>NDVI:</b>%s\n",
+                            round(sc_plot$greenness, 2),round(sc_plot$urban, 2),round(sc_plot$ndvi, 2)),
             popupOptions = popupOptions(maxWidth ="100%", closeOnClick = TRUE)
             )
 # }
