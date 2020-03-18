@@ -14,7 +14,7 @@
 #' @param categorias \code{Vector:} Correspondiente a las categorías de espacios verdes de la base de datos
 #' del urban atlas.
 #'
-#' @usage area_urban(sc, id_sc, urban, categorias = c(14100, 14200))
+#' @usage area_urban(sc, id_sc, urban, categorias = c(14100))
 #'
 #' @details La función empieza calculando el área de cada sección censal (sc). Luego intersecta las sc
 #' con las áreas verdes definidas por el mapa urban atlas, calcula el área de las intersecciones y
@@ -60,7 +60,7 @@
 #' @encoding UTF-8
 #'
 #' @export
-area_urban <- function(sc, id_sc, urban, categorias = c(14100,14200)){
+area_urban <- function(sc, id_sc, urban, categorias = c(14100)){
   # Comprobar el año del mapa urban atlas y Subset por categorias: por defecto 'Green urban areas' y 'Sports and leisure facilities'
   urban <- ano_urban(urban, categorias)
 
@@ -193,7 +193,7 @@ area_urban <- function(sc, id_sc, urban, categorias = c(14100,14200)){
 #' @encoding UTF-8
 #'
 #' @export
-acceso_urban <- function(sc, id_sc, urban, catastro, radio = 300, categorias = c(14100,14200)){
+acceso_urban <- function(sc, id_sc, urban, catastro, radio = 300, categorias = c(14100)){
   crs_sc <- sf::st_crs(sc)
 
   # siempre a sf

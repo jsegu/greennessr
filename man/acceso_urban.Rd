@@ -5,14 +5,7 @@
 \alias{acceso_urban}
 \title{Accesibilidad a areas verdes}
 \usage{
-acceso_urban(
-  sc,
-  id_sc,
-  urban,
-  catastro,
-  radio = 300,
-  categorias = c(14100, 14200)
-)
+acceso_urban(sc, id_sc, urban, catastro, radio = 300, categorias = c(14100))
 }
 \arguments{
 \item{sc}{Objeto espacial \code{(SpatialPolygonsDataFrame / sf):} con las geometrías poligonales

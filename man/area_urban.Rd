@@ -5,7 +5,7 @@
 \alias{area_urban}
 \title{Calculo de la superficie de areas verdes urbanas}
 \usage{
-area_urban(sc, id_sc, urban, categorias = c(14100, 14200))
+area_urban(sc, id_sc, urban, categorias = c(14100))
 }
 \arguments{
 \item{sc}{Objeto espacial \code{(SpatialPolygonsDataFrame / sf):} con las geometrías poligonales
