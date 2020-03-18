@@ -76,12 +76,10 @@ constancia <- function(x){
 #' @description A partir de las variables calculadas con las funciones de extracción de la superficie
 #' verde urbana (\link[greennessr]{area_verde} y \link[greennessr]{acceso_verde}) y de las funciones
 #' de extracción del NDVI (\link[greennessr]{ndvi} y \link[greennessr]{acceso_ndvi}). Se construye
-#' un índice combinado “greenness” calculado con una media ponderada entre el área verde urbana,
-#' el NDVI y la correlación entre dichas variables, dando mayor peso al área verde urbana “urban
-#' atlas”.
+#' un índice combinado “greenness” calculado con una media ponderada entre el área verde urbana
+#' y el NDVI dando mayor peso al área verde urbana “urban atlas”.
 #'
 #' @param x
-#'
 #'
 #'
 #' @encoding UTF-8
@@ -96,7 +94,7 @@ greenness <- function(x, urban, ndvi){
                   ifelse(x<(quantile(x,0.75)),'3','4'
                   )))}
   #indice ponderado
-  res$greenness <- x[,c(urban)]*0.75+((x[,c(ndvi)]+1)*50*((cor(x[,c(ndvi)], x[,c(urban)])+1))/2)*0.25
+  res$greenness <- as.numeric(sc$urban)*0.8+(as.numeric(sc$ndvi)+1)*50*0.2
 
   ## crear categorias
   res$green_cat <- a(res$greenness)
