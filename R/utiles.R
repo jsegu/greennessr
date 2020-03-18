@@ -89,7 +89,7 @@ greenness <- function(x, urban, ndvi){
   res <- x
   x <- as.data.frame(x)
   a <- function(x){
-    ifelse(x<quantile(x,0.25), '1',
+    ifelse(x<stats::quantile(x,0.25), '1',
            ifelse(x<stats::quantile(x,0.5),'2',
                   ifelse(x<(stats::quantile(x,0.75)),'3','4'
                   )))}
