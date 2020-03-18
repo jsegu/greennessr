@@ -7,11 +7,13 @@
 \usage{
 greenness(x, urban, ndvi)
 }
+\arguments{
+\item{x}{}
+}
 \description{
 A partir de las variables calculadas con las funciones de extracción de la superficie
 verde urbana (\link[greennessr]{area_verde} y \link[greennessr]{acceso_verde}) y de las funciones
 de extracción del NDVI (\link[greennessr]{ndvi} y \link[greennessr]{acceso_ndvi}). Se construye
-un índice combinado “greenness” calculado con una media ponderada entre el área verde urbana,
-el NDVI y la correlación entre dichas variables, dando mayor peso al área verde urbana “urban
-atlas”.
+un índice combinado “greenness” calculado con una media ponderada entre el área verde urbana
+y el NDVI dando mayor peso al área verde urbana “urban atlas”.
 }

@@ -90,11 +90,11 @@ greenness <- function(x, urban, ndvi){
   x <- as.data.frame(x)
   a <- function(x){
     ifelse(x<quantile(x,0.25), '1',
-           ifelse(x<quantile(x,0.5),'2',
-                  ifelse(x<(quantile(x,0.75)),'3','4'
+           ifelse(x<stats::quantile(x,0.5),'2',
+                  ifelse(x<(stats::quantile(x,0.75)),'3','4'
                   )))}
   #indice ponderado
-  res$greenness <- as.numeric(sc$urban)*0.8+(as.numeric(sc$ndvi)+1)*50*0.2
+  res$greenness <- as.numeric(urban)*0.8+(as.numeric(ndvi)+1)*50*0.2
 
   ## crear categorias
   res$green_cat <- a(res$greenness)
