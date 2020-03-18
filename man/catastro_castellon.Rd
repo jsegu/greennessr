@@ -5,9 +5,7 @@
 \name{catastro_castellon}
 \alias{catastro_castellon}
 \title{Edificios de Castello de la Plana}
-\format{
-Objeto data.frame con extensión espacial sf.
-}
+\format{Objeto data.frame con extensión espacial sf.}
 \usage{
 catastro_castellon
 }

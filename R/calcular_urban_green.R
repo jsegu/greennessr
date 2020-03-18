@@ -14,7 +14,7 @@
 #' @param categorias \code{Vector:} Correspondiente a las categorías de espacios verdes de la base de datos
 #' del urban atlas.
 #'
-#' @usage area_verde(sc, id_sc, urban, categorias = c(14100, 14200))
+#' @usage area_urban(sc, id_sc, urban, categorias = c(14100, 14200))
 #'
 #' @details La función empieza calculando el área de cada sección censal (sc). Luego intersecta las sc
 #' con las áreas verdes definidas por el mapa urban atlas, calcula el área de las intersecciones y
@@ -30,7 +30,7 @@
 #' los cambiará si fuese necesario.
 #'
 #' @return El resultado que devuelve es el mismo objeto espacial \code{(SpatialPolygonsDataFrame / sf)}
-#' introducido en el parámetro \code{sc} de la función, con una columna nueva llamada area_verde que
+#' introducido en el parámetro \code{sc} de la función, con una columna nueva llamada area_urban que
 #' tiene el resultado para cada polígono, expresado en porcentaje.
 #'
 #' @examples
@@ -47,14 +47,14 @@
 #  # ver nombre columna id secciones
 #' head(secciones_castellon) # 'secccion'
 #'
-#' castellon_area_verde <- area_urban(
+#' castellon_area_urban <- area_urban(
 #' sc         = secciones_castellon,
 #' id_sc      = 'seccion',
 #' urban      = urban_atlas_castellon,
 #' categorias = c(14100, 14200)
 #' )
 #'
-#' summary(castellon_area_verde$area_verde)
+#' summary(castellon_area_urban$area_urban)
 #'
 #'
 #' @encoding UTF-8
@@ -79,7 +79,7 @@ area_urban <- function(sc, id_sc, urban, categorias = c(14100,14200)){
   # calculo del area de cada sc y de su interseccion
   sc$area_sc <- sf::st_area(sc)
   aux <- sf::st_intersection(sc, urban)
-  aux$area_verde <- sf::st_area(aux)
+  aux$urban <- sf::st_area(aux)
   aux <- as.data.frame(aux)
 
   # group by seccion sumando superficies
@@ -87,20 +87,20 @@ area_urban <- function(sc, id_sc, urban, categorias = c(14100,14200)){
     X   = by(
       data     = aux,
       INDICES  = aux$seccion,
-      FUN      = function(x) sum(x$area_verde, na.rm = TRUE) / x$area_sc * 100
+      FUN      = function(x) sum(x$urban, na.rm = TRUE) / x$area_sc * 100
     ),
     FUN = unique
   )
   aux <- data.frame(
     seccion          = names(tmp),
-    area_verde      = tmp,
+    urban      = tmp,
     stringsAsFactors = FALSE
   )
 
   # juntar resultados y volver a cambiar nombre id_sc
   sc <- sc[, -which(names(sc) %in% c('area_sc'))]
-  sc$area_verde <- aux$area_verde[match(sc$seccion, aux$seccion)]
-  sc[is.na(sc$area_verde),'area_verde'] <- 0
+  sc$urban <- aux$urban[match(sc$seccion, aux$seccion)]
+  sc[is.na(sc$urban),'urban'] <- 0
   colnames(sc)[colnames(sc)=='seccion'] <- id_sc
 
   # transformar coordenadas y formato sp si es necesario

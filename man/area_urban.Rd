@@ -5,7 +5,7 @@
 \alias{area_urban}
 \title{Calculo de la superficie de areas verdes urbanas}
 \usage{
-area_verde(sc, id_sc, urban, categorias = c(14100, 14200))
+area_urban(sc, id_sc, urban, categorias = c(14100, 14200))
 }
 \arguments{
 \item{sc}{Objeto espacial \code{(SpatialPolygonsDataFrame / sf):} con las geometrías poligonales
@@ -22,7 +22,7 @@ del urban atlas.}
 }
 \value{
 El resultado que devuelve es el mismo objeto espacial \code{(SpatialPolygonsDataFrame / sf)}
-introducido en el parámetro \code{sc} de la función, con una columna nueva llamada area_verde que
+introducido en el parámetro \code{sc} de la función, con una columna nueva llamada area_urban que
 tiene el resultado para cada polígono, expresado en porcentaje.
 }
 \description{
@@ -58,14 +58,14 @@ class(urban_atlas_castellon)
 
 head(secciones_castellon) # 'secccion'
 
-castellon_area_verde <- area_urban(
+castellon_area_urban <- area_urban(
 sc         = secciones_castellon,
 id_sc      = 'seccion',
 urban      = urban_atlas_castellon,
 categorias = c(14100, 14200)
 )
 
-summary(castellon_area_verde$area_verde)
+summary(castellon_area_urban$area_urban)
 
 
 }

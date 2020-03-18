@@ -5,9 +5,7 @@
 \name{urban_atlas_castellon}
 \alias{urban_atlas_castellon}
 \title{Urban Atlas de Castello de la Plana}
-\format{
-Objeto data.frame con extensión espacial sf.
-}
+\format{Objeto data.frame con extensión espacial sf.}
 \usage{
 urban_atlas_castellon
 }
