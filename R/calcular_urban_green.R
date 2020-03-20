@@ -246,7 +246,7 @@ acceso_urban <- function(sc, id_sc, urban, catastro, radio = 300, categorias = c
     X   = by(
       data     = aux,
       INDICES  = aux$gml_id,
-      FUN      = function(x) sum(x$area_i, na.rm = TRUE) / x$area_bff
+      FUN      = function(x) (sum(x$area_i, na.rm = TRUE) / x$area_bff) * 100
     ),
     FUN = unique
   )
@@ -277,7 +277,7 @@ acceso_urban <- function(sc, id_sc, urban, catastro, radio = 300, categorias = c
     }
   )
   # juntar resultado a un nuevo campo
-  sc$accs_verde <- prop_ponderada[match(sc$seccion, names(prop_ponderada))]
+  sc$accs_urban <- prop_ponderada[match(sc$seccion, names(prop_ponderada))]
 
   # transformaciones para devolver mismo objeto introducido por usuario
   sc <- sf::st_transform(sc, crs_sc)

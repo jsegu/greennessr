@@ -293,7 +293,7 @@ acceso_ndvi <- function(dir_img, sc, id_sc, catastro, radio =300, calculo = mean
       )
     }
   )
-  sc$ndvi_pond<- ponderado[match(sc$seccion, names(ponderado))]
+  sc$accs_ndvi<- ponderado[match(sc$seccion, names(ponderado))]
 
   # transformaciones para devolver mismo objeto introducido por usuario
   sc <- transformar(sc, a_sf)
