@@ -19,7 +19,11 @@
 #' @param radio Numérico: Se utiliza si el parámetro \code{puntos = TRUE}. Distancia en metros del radio
 #' del buffer, por defecto 300m.
 #'
+<<<<<<< HEAD
 #' @usage area_verde(sc, id_sc, urban, categorias = c(14100, 14200), puntos = FALSE, radio = 300)
+=======
+#' @usage area_urban(sc, id_sc, urban, categorias = c(14100))
+>>>>>>> opt_gns
 #'
 #' @details La función empieza calculando el área de cada sección censal (sc). Luego intersecta las sc
 #' con las áreas verdes definidas por el mapa urban atlas, calcula el área de las intersecciones y
@@ -35,7 +39,7 @@
 #' los cambiará si fuese necesario.
 #'
 #' @return El resultado que devuelve es el mismo objeto espacial \code{(SpatialPolygonsDataFrame / sf)}
-#' introducido en el parámetro \code{sc} de la función, con una columna nueva llamada area_verde que
+#' introducido en el parámetro \code{sc} de la función, con una columna nueva llamada area_urban que
 #' tiene el resultado para cada polígono, expresado en porcentaje.
 #'
 #' @examples
@@ -52,22 +56,30 @@
 #  # ver nombre columna id secciones
 #' head(secciones_castellon) # 'secccion'
 #'
-#' castellon_area_verde <- area_verde(
+#' castellon_area_urban <- area_urban(
 #' sc         = secciones_castellon,
 #' id_sc      = 'seccion',
 #' urban      = urban_atlas_castellon,
+<<<<<<< HEAD
 #' categorias = c(14100, 14200),
 #' puntos     = FALSE,
 #' radio      = 300
+=======
+#' categorias = c(14100)
+>>>>>>> opt_gns
 #' )
 #'
-#' summary(castellon_area_verde$area_verde)
+#' summary(castellon_area_urban$area_urban)
 #'
 #'
 #' @encoding UTF-8
 #'
 #' @export
+<<<<<<< HEAD
 area_verde <- function(sc, id_sc, urban, categorias = c(14100,14200), puntos = FALSE, radio = 300){
+=======
+area_urban <- function(sc, id_sc, urban, categorias = c(14100)){
+>>>>>>> opt_gns
   # Comprobar el año del mapa urban atlas y Subset por categorias: por defecto 'Green urban areas' y 'Sports and leisure facilities'
   urban <- ano_urban(urban, categorias)
 
@@ -92,7 +104,7 @@ area_verde <- function(sc, id_sc, urban, categorias = c(14100,14200), puntos = F
   # calculo del area de cada sc y de su interseccion
   sc$area_sc <- sf::st_area(sc)
   aux <- sf::st_intersection(sc, urban)
-  aux$area_verde <- sf::st_area(aux)
+  aux$urban <- sf::st_area(aux)
   aux <- as.data.frame(aux)
 
   # group by seccion sumando superficies
@@ -100,20 +112,20 @@ area_verde <- function(sc, id_sc, urban, categorias = c(14100,14200), puntos = F
     X   = by(
       data     = aux,
       INDICES  = aux$seccion,
-      FUN      = function(x) sum(x$area_verde, na.rm = TRUE) / x$area_sc * 100
+      FUN      = function(x) sum(x$urban, na.rm = TRUE) / x$area_sc * 100
     ),
     FUN = unique
   )
   aux <- data.frame(
     seccion          = names(tmp),
-    area_verde      = tmp,
+    urban      = tmp,
     stringsAsFactors = FALSE
   )
 
   # juntar resultados y volver a cambiar nombre id_sc
   sc <- sc[, -which(names(sc) %in% c('area_sc'))]
-  sc$area_verde <- aux$area_verde[match(sc$seccion, aux$seccion)]
-  sc[is.na(sc$area_verde),'area_verde'] <- 0
+  sc$urban <- aux$urban[match(sc$seccion, aux$seccion)]
+  sc[is.na(sc$urban),'urban'] <- 0
   colnames(sc)[colnames(sc)=='seccion'] <- id_sc
 
   # si la entrada son puntos hacer buffer
@@ -136,7 +148,7 @@ area_verde <- function(sc, id_sc, urban, categorias = c(14100,14200), puntos = F
 #' correspondientes a 'Green urban areas' y Sports and leisure facilities', pero estas se pueden modificar
 #' con el parámetro \code{categorias}.
 #'
-#' @details Esta función es una variante más compleja de \link[greennessr]{area_verde}, que tiene en cuenta
+#' @details Esta función es una variante más compleja de \link[greennessr]{area_urban}, que tiene en cuenta
 #' la accesibilidad a espacios verdes urbanos de los habitantes de una sección censal en función de la
 #' ubicación de su edificio. En primer lugar la se extrae el centroide de cada edificio del mapa catastral,
 #' seguidamente se genera un buffer de 300 metros (modificable con el parámetro \code{radio}) que
@@ -197,13 +209,13 @@ area_verde <- function(sc, id_sc, urban, categorias = c(14100,14200), puntos = F
 #  # ver nombre columna id secciones
 #' head(secciones_castellon) # 'secccion'
 #'
-#' accs_verde <- acceso_verde(
+#' accs_verde <- acceso_urban(
 #'   sc         = secciones_castellon,
 #'   id_sc      = 'seccion',
 #'   urban      = urban_atlas_castellon,
 #'   catastro   = catastro_castellon,
 #'   radio      = 300,
-#'   categorias = c(14100, 14200)
+#'   categorias = c(14100)
 #' )
 #'
 #' summary(accs_verde$accs_verde)
@@ -211,7 +223,7 @@ area_verde <- function(sc, id_sc, urban, categorias = c(14100,14200), puntos = F
 #' @encoding UTF-8
 #'
 #' @export
-acceso_verde <- function(sc, id_sc, urban, catastro, radio = 300, categorias = c(14100,14200)){
+acceso_urban <- function(sc, id_sc, urban, catastro, radio = 300, categorias = c(14100)){
   crs_sc <- sf::st_crs(sc)
 
   # siempre a sf
@@ -264,7 +276,7 @@ acceso_verde <- function(sc, id_sc, urban, catastro, radio = 300, categorias = c
     X   = by(
       data     = aux,
       INDICES  = aux$gml_id,
-      FUN      = function(x) sum(x$area_i, na.rm = TRUE) / x$area_bff
+      FUN      = function(x) (sum(x$area_i, na.rm = TRUE) / x$area_bff) * 100
     ),
     FUN = unique
   )
@@ -295,7 +307,7 @@ acceso_verde <- function(sc, id_sc, urban, catastro, radio = 300, categorias = c
     }
   )
   # juntar resultado a un nuevo campo
-  sc$accs_verde <- prop_ponderada[match(sc$seccion, names(prop_ponderada))]
+  sc$accs_urban <- prop_ponderada[match(sc$seccion, names(prop_ponderada))]
 
   # transformaciones para devolver mismo objeto introducido por usuario
   sc <- sf::st_transform(sc, crs_sc)
