@@ -19,12 +19,6 @@
 #' @param radio Numérico: Se utiliza si el parámetro \code{puntos = TRUE}. Distancia en metros del radio
 #' del buffer, por defecto 300m.
 #'
-<<<<<<< HEAD
-#' @usage area_verde(sc, id_sc, urban, categorias = c(14100, 14200), puntos = FALSE, radio = 300)
-=======
-#' @usage area_urban(sc, id_sc, urban, categorias = c(14100))
->>>>>>> opt_gns
-#'
 #' @details La función empieza calculando el área de cada sección censal (sc). Luego intersecta las sc
 #' con las áreas verdes definidas por el mapa urban atlas, calcula el área de las intersecciones y
 #' finalmente calcula el porcentaje de área verde urbana ubicado en cada sección censal.
@@ -60,13 +54,7 @@
 #' sc         = secciones_castellon,
 #' id_sc      = 'seccion',
 #' urban      = urban_atlas_castellon,
-<<<<<<< HEAD
-#' categorias = c(14100, 14200),
-#' puntos     = FALSE,
-#' radio      = 300
-=======
 #' categorias = c(14100)
->>>>>>> opt_gns
 #' )
 #'
 #' summary(castellon_area_urban$area_urban)
@@ -75,11 +63,7 @@
 #' @encoding UTF-8
 #'
 #' @export
-<<<<<<< HEAD
-area_verde <- function(sc, id_sc, urban, categorias = c(14100,14200), puntos = FALSE, radio = 300){
-=======
-area_urban <- function(sc, id_sc, urban, categorias = c(14100)){
->>>>>>> opt_gns
+area_urban <- function(sc, id_sc, urban, categorias = c(14100), puntos = FALSE, radio = 300){
   # Comprobar el año del mapa urban atlas y Subset por categorias: por defecto 'Green urban areas' y 'Sports and leisure facilities'
   urban <- ano_urban(urban, categorias)
 

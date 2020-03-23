@@ -5,12 +5,15 @@
 \alias{ndvi}
 \title{Calculo del NDVI para cada seccion censal}
 \usage{
-<<<<<<< HEAD:man/calcular_ndvi.Rd
-calcular_ndvi(dir_img, sc, calculo = mean, dev_raster = FALSE, landsat8 = FALSE, puntos = FALSE,
-radio = 300)
-=======
-ndvi(dir_img, sc, calculo = mean, dev_raster = FALSE, landsat8 = FALSE)
->>>>>>> opt_gns:man/ndvi.Rd
+ndvi(
+  dir_img,
+  sc,
+  calculo = mean,
+  dev_raster = FALSE,
+  landsat8 = FALSE,
+  puntos = FALSE,
+  radio = 300
+)
 }
 \arguments{
 \item{dir_img}{Carácter: Directorio donde se encuentra la imagen Landsat, tiene que estar descomprimida.}

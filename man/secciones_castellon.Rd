@@ -5,7 +5,9 @@
 \name{secciones_castellon}
 \alias{secciones_castellon}
 \title{Secciones censales Castello de la Plana}
-\format{Objeto data.frame con extensión espacial sf.}
+\format{
+Objeto data.frame con extensión espacial sf.
+}
 \usage{
 secciones_castellon
 }

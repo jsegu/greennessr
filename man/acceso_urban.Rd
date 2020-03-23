@@ -88,7 +88,7 @@ accs_verde <- acceso_urban(
   urban      = urban_atlas_castellon,
   catastro   = catastro_castellon,
   radio      = 300,
-  categorias = c(14100, 14200)
+  categorias = c(14100)
 )
 
 summary(accs_verde$accs_verde)

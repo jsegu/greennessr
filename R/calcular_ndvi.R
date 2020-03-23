@@ -20,13 +20,6 @@
 #' @param radio Numérico: Se utiliza si el parámetro \code{puntos = TRUE}. Distancia en metros del radio
 #' del buffer, por defecto 300m.
 #'
-<<<<<<< HEAD
-#' @usage calcular_ndvi(dir_img, sc, calculo = mean, dev_raster = FALSE, landsat8 = FALSE, puntos = FALSE,
-#' radio = 300)
-=======
-#' @usage ndvi(dir_img, sc, calculo = mean, dev_raster = FALSE, landsat8 = FALSE)
->>>>>>> opt_gns
-#'
 #' @details El índice de vegetación normalizado (NDVI) se utiliza para estimar la cantidad, calidad y el
 #' desarrollo de la vegetación. Este estimador se calcula mediante los valores de intensidad de la radiación
 #' que las plantas emiten o reflejan en ciertos rangos del espectro electromagnético. Concretamente en las
@@ -83,13 +76,8 @@
 #' @encoding UTF-8
 #'
 #' @export
-<<<<<<< HEAD
-calcular_ndvi <- function(dir_img, sc, calculo = mean, dev_raster = FALSE, landsat8 = FALSE,
-                          puntos = FALSE, radio = 300){
-=======
-ndvi <- function(dir_img, sc, calculo = mean, dev_raster = FALSE, landsat8 = FALSE){
->>>>>>> opt_gns
-
+ndvi <- function(dir_img, sc, calculo = mean, dev_raster = FALSE, landsat8 = FALSE,
+                 puntos = FALSE, radio = 300){
   # Para cambiar patern en funcion del satelite
   if (isFALSE(landsat8)){
     satelite <- 'B3|B4'
@@ -249,7 +237,8 @@ ndvi <- function(dir_img, sc, calculo = mean, dev_raster = FALSE, landsat8 = FAL
 #'
 #' @encoding UTF-8
 #' @export
-acceso_ndvi <- function(dir_img, sc, id_sc, catastro, radio =300, calculo = mean, dev_raster = FALSE, landsat8 = FALSE){
+acceso_ndvi <- function(dir_img, sc, id_sc, catastro, radio =300, calculo = mean,
+                        dev_raster = FALSE, landsat8 = FALSE){
 
   # siempre a sf
   catastro <- sf::st_as_sf(catastro)
