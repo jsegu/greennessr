@@ -51,7 +51,7 @@
 #' sc         = secciones_castellon,
 #' id_sc      = 'seccion',
 #' urban      = urban_atlas_castellon,
-#' categorias = c(14100, 14200)
+#' categorias = c(14100)
 #' )
 #'
 #' summary(castellon_area_urban$area_urban)
@@ -185,7 +185,7 @@ area_urban <- function(sc, id_sc, urban, categorias = c(14100)){
 #'   urban      = urban_atlas_castellon,
 #'   catastro   = catastro_castellon,
 #'   radio      = 300,
-#'   categorias = c(14100, 14200)
+#'   categorias = c(14100)
 #' )
 #'
 #' summary(accs_verde$accs_verde)
