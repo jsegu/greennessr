@@ -98,7 +98,7 @@ constancia <- function(x){
 #' @return Devuelve el mismo DataFrame de entrada con dos columnas añadidas:
 #' \itemize{
 #' \item greenness: Columna con el valor absoluto del índice greenness.
-#' \item green_cat: Columna con el valor categorizado por cuartiles.
+#' \item green_cat: Columna con el valor de la variable greenness categorizada por cuartiles.
 #' }
 #'
 #' @examples
