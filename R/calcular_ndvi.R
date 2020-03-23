@@ -208,14 +208,14 @@ ndvi <- function(dir_img, sc, calculo = mean, dev_raster = FALSE, landsat8 = FAL
 #' \dontrun{
 #' library(greennessr)
 #' sc_cordoba <- acceso_ndvi(
-#'   dir_img = '~01_data/landsat/Cordoba',
-#'   sc = cordoba_sc,
-#'   id_sc = "seccion",
-#'   catastro = cordoba_catastro,
-#'   radio = 300,
-#'   calculo = mean,
+#'   dir_img    = '~01_data/landsat/Cordoba',
+#'   sc         = cordoba_sc,
+#'   id_sc      = "seccion",
+#'   catastro   = cordoba_catastro,
+#'   radio      = 300,
+#'   calculo    = mean,
 #'   dev_raster = TRUE,
-#'   landsat8 = FALSE
+#'   landsat8   = FALSE
 #' )
 #' sc_cordoba}
 #'

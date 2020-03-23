@@ -2,13 +2,13 @@
 greennessr
 ==========
 
-Paquete de R enmarcado dentro del proyecto MEDEA 3, concretamente creado para el objetivo de estimar la exposición a espacios verdes en de núcleos urbanos.
+Paquete de R enmarcado dentro del proyecto MEDEA 3, concretamente creado para el objetivo de estimar la exposición a espacios verdes en núcleos urbanos.
 
-Los espacios verdes urbanos son beneficiosos para la salud de los ciudadanos que conviven en ciudades. Los arboles ayudan a reducir la contaminación y establecen una barrera verde, que por ejemplo, ayuda a la regulación de las temperaturas y para bajar los niveles de contaminación acústica producida por los automóviles. Además diversos estudios apuntan que el hecho de tener un parque o un equipamiento deportivo cercano al domicilio de residencia incentiva el deporte y la movilidad de los habitantes.
+Los espacios verdes urbanos son beneficiosos para la salud de los ciudadanos que conviven en ciudades. Los arboles ayudan a reducir la contaminación y establecen una barrera verde, que por ejemplo, ayuda a la regulación de las temperaturas y para bajar los niveles de contaminación acústica producida por los automóviles. Además diversos estudios apuntan que el hecho de tener un parque o un equipamiento deportivo cercano al domicilio de residencia incentiva el deporte y la movilidad de los habitantes. 
 
-Mediante las funciones de esta librería, se han generado distintas metodologías para la extracción de la variable de exposición a espacios verdes urbanos. Así el usuario tiene la posibilidad de comparar las diversas aproximaciones para el cálculo de dicha variable con un mismo paquete de funciones.
+Mediante las funciones de esta librería, se han generado distintas metodologías para la extracción de la variable de exposición a espacios verdes urbanos. Así el usuario tiene la posibilidad de comparar las diversas aproximaciones para el cálculo de dicha variable con un mismo paquete de funciones.Además se ha incluido un función que resume las dos principales aproximaciones del paquete, mediante un índice ponderado llamado 'greenness'. 
 
-Las funciones de *area\_verde* y *acceso\_verde* calculan la variable utilizando los datos vectoriales de la base de datos [urban atlas](https://land.copernicus.eu/local/urban-atlas), un mapa de usos y cubiertas del suelo de las principales ciudades europeas creado por el proyecto Copernicus. La función *calcular\_ndvi* calcula la variable utilizando el índice de vegetación normalizado (NDVI) que se obtiene mediante imágenes de satélite, en este caso de landsat (propiedad de la NASA y la USGS). Las [imagenes](https://earthexplorer.usgs.gov/) están disponibles de forma gratuita.
+Las funciones de *area_urban* y *acceso_urban* calculan la variable utilizando los datos vectoriales de la base de datos [urban atlas](https://land.copernicus.eu/local/urban-atlas), un mapa de usos y cubiertas del suelo de las principales ciudades europeas creado por el proyecto Copernicus. La función *ndvi* y *acceso_ndvi* calcula la variable utilizando el índice de vegetación normalizado (NDVI) que se obtiene mediante imágenes de satélite, en este caso de landsat (propiedad de la NASA y la USGS). Las [imágenes](https://earthexplorer.usgs.gov/) están disponibles de forma gratuita.
 
 Instalación
 -----------
