@@ -240,6 +240,7 @@ acceso_urban <- function(sc, id_sc, urban, catastro, radio = 300, categorias = c
   catastro <- sf::st_centroid(catastro)
 
   # buffer a lo urbano
+  urban <- sf::st_transform(urban, sf::st_crs(catastro))
   urban_bff <- sf::st_buffer(urban, radio)
 
   # determinar si los centroides están dentro o fuera de la influencia green urban
@@ -276,6 +277,7 @@ acceso_urban <- function(sc, id_sc, urban, catastro, radio = 300, categorias = c
   rm(aux, tmp, urban)
 
   # pegar numero seccion censal i elimanar nulos
+  sc <- sf::st_transform(sc, sf::st_crs(catastro))
   catastro <- sf::st_join(catastro, sc[, c('seccion')])
   catastro <- catastro[!is.na(catastro$seccion),]
 

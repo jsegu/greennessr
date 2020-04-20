@@ -298,7 +298,8 @@ acceso_ndvi <- function(dir_img, sc, id_sc, catastro, radio =300, calculo = mean
 
   # intersectar edificios con las secciones censales
   aux <- transformar(sc)
-  aux <- sf::st_intersection(epsg_igual(catastro,aux), sf::st_centroid(catastro))
+  aux <- sf::st_transform(aux, sf::st_crs(catastro))
+  aux <- sf::st_intersection(aux, sf::st_centroid(catastro))
 
   # calculo de la ponderación
   ponderado <- sapply(
