@@ -39,4 +39,4 @@ httr::set_config(
 Dudas y consultas
 -----------------
 
-Para cualquier duda, consulta o aportación lo puede realizar a través de los propios canales de GitHub: Issue y Pull Request. O bien contactando directamente con Jordi Segú Tell a través de esta dirección de correo electrónico <jordi.segu@isciii.es>.
+Para cualquier duda, consulta o aportación lo puede realizar a través de los propios canales de GitHub: Issue y Pull Request. O bien contactando directamente con Jordi Segú Tell a través de esta dirección de correo electrónico <jordisegutell@gmail.com>.
